@@ -1,0 +1,8 @@
+.venv/
+.uv-cache/
+.hf-cache/
+.runtime/
+test_image.png
+__pycache__/
+*.py[cod]
+.DS_Store

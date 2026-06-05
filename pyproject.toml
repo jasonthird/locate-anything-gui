@@ -1,0 +1,23 @@
+[project]
+name = "locateanything-mac-test"
+version = "0.1.0"
+description = "Minimal Apple Silicon test harness for nvidia/LocateAnything-3B"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "accelerate>=1.0.0",
+    "decord==0.6.0; sys_platform != 'darwin'",
+    "lmdb==1.7.5",
+    "llguidance>=1.7.0",
+    "mlx>=0.31.2",
+    "numpy>=1.26,<2.3",
+    "opencv-python-headless==4.11.0.86",
+    "peft>=0.14.0",
+    "pillow>=11.1.0",
+    "pyside6>=6.8.0",
+    "torch>=2.6.0",
+    "torchvision>=0.21.0",
+    "transformers==4.57.1",
+]
+
+[tool.uv]
+python-preference = "only-managed"
