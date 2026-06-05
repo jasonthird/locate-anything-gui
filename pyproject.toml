@@ -2,6 +2,7 @@
 name = "locateanything-mac-test"
 version = "0.1.0"
 description = "Minimal Apple Silicon test harness for nvidia/LocateAnything-3B"
+license = "GPL-3.0-only"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "accelerate>=1.0.0",

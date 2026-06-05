@@ -97,6 +97,7 @@ For webcam scenes, start with `detect`, `point`, `ground-single`, or `ground-mul
 ## Notes
 
 - The model license is non-commercial research use only.
+- This repository's code is licensed under GPL-3.0-only. The upstream model weights and third-party dependencies keep their own licenses.
 - `PYTORCH_ENABLE_MPS_FALLBACK=1` is set by the script before importing torch.
 - `HF_HOME=.hf-cache` is set by the scripts so model files stay inside this project.
 - `HF_HUB_DISABLE_XET=1` is set by the scripts to force standard Hugging Face HTTPS downloads on macOS.
