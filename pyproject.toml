@@ -1,7 +1,7 @@
 [project]
-name = "locateanything-mac-test"
+name = "locate-anything-gui"
 version = "0.1.0"
-description = "Minimal Apple Silicon test harness for nvidia/LocateAnything-3B"
+description = "Apple Silicon GUI and test harness for nvidia/LocateAnything-3B"
 license = "GPL-3.0-only"
 requires-python = ">=3.12,<3.13"
 dependencies = [

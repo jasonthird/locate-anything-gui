@@ -1,8 +1,8 @@
-# LocateAnything-3B on Apple Silicon
+# Locate Anything GUI
 
-This is a minimal Mac test harness for `nvidia/LocateAnything-3B`.
+This is a native macOS Qt webcam GUI for `nvidia/LocateAnything-3B`, using the Apple Silicon MLX quantization `mlx-community/LocateAnything-3B-4bit`.
 
-The model is built for CUDA/Linux first, so the first runnable Mac path uses PyTorch MPS with CPU fallback enabled. Expect partial acceleration, not CUDA-class throughput.
+The main app runs the MLX 4-bit model on Metal and keeps it loaded in memory for semi-real-time webcam demos. The original PyTorch/MPS scripts are kept as compatibility experiments, but the recommended Mac path is the MLX GUI.
 
 ## Setup
 
@@ -16,9 +16,9 @@ The MLX LocateAnything support currently lives on an `mlx-vlm` branch whose depe
 UV_CACHE_DIR=.uv-cache uv pip install --no-deps mlx-lm==0.31.3 "git+https://github.com/beshkenadze/mlx-vlm@feat/locateanything-3b"
 ```
 
-## First Run
+## PyTorch/MPS Fallback
 
-Download the model first. This is about 8 GB and is resumable.
+The original NVIDIA model can also be tested through PyTorch/MPS, but that path is slower and may fall back to CPU for unsupported operations. Download the original model first. This is about 8 GB and is resumable.
 
 ```bash
 UV_CACHE_DIR=.uv-cache uv run python download_model.py
