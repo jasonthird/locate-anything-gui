@@ -558,12 +558,22 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--camera", type=int, default=0)
     parser.add_argument("--model", default=MODEL_ID)
+    parser.add_argument("--screenshot", type=Path, help="Save a screenshot of the app window and exit.")
+    parser.add_argument("--screenshot-delay", type=float, default=1.5)
     args = parser.parse_args()
 
     app = QApplication(sys.argv)
     window = MainWindow(camera_index=args.camera, model_id=args.model)
     app.aboutToQuit.connect(window.shutdown)
     window.show()
+    if args.screenshot:
+        def save_screenshot() -> None:
+            args.screenshot.parent.mkdir(parents=True, exist_ok=True)
+            pixmap = window.grab()
+            pixmap.save(str(args.screenshot))
+            app.quit()
+
+        QTimer.singleShot(int(args.screenshot_delay * 1000), save_screenshot)
     sys.exit(app.exec())
 
 

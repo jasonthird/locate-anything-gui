@@ -4,6 +4,8 @@ This is a native macOS Qt webcam GUI for `nvidia/LocateAnything-3B`, using the A
 
 The main app runs the MLX 4-bit model on Metal and keeps it loaded in memory for semi-real-time webcam demos. The original PyTorch/MPS scripts are kept as compatibility experiments, but the recommended Mac path is the MLX GUI.
 
+![Locate Anything GUI screenshot](docs/screenshot.png)
+
 ## Setup
 
 ```bash
@@ -16,62 +18,23 @@ The MLX LocateAnything support currently lives on an `mlx-vlm` branch whose depe
 UV_CACHE_DIR=.uv-cache uv pip install --no-deps mlx-lm==0.31.3 "git+https://github.com/beshkenadze/mlx-vlm@feat/locateanything-3b"
 ```
 
-## PyTorch/MPS Fallback
+## Run the GUI
 
-The original NVIDIA model can also be tested through PyTorch/MPS, but that path is slower and may fall back to CPU for unsupported operations. Download the original model first. This is about 8 GB and is resumable.
-
-```bash
-UV_CACHE_DIR=.uv-cache uv run python download_model.py
-```
-
-If that stalls, download only the two large weight shards:
-
-```bash
-UV_CACHE_DIR=.uv-cache uv run python download_weights.py
-```
-
-Then run the smoke test:
-
-```bash
-UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --task point --query "the red square" --max-new-tokens 32
-```
-
-The script creates a simple local test image if you do not pass `--image`.
-
-## Useful Options
-
-```bash
-UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --image path/to/image.jpg --task detect --query "person, car"
-UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --image path/to/screen.png --task gui-point --query "the search button"
-UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --device cpu --dtype float32
-UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --generation-mode hybrid --max-new-tokens 2048
-```
-
-Start with `--generation-mode slow` for the original PyTorch/MPS path if you are debugging compatibility. It is slower, but avoids the fast parallel decoding path while proving the model runs.
-
-## MLX 4-bit Run
-
-The MLX 4-bit conversion is much faster on Apple Silicon:
-
-```bash
-UV_CACHE_DIR=.uv-cache uv run python run_locateanything_mlx.py --task point --query "the red square"
-```
-
-This uses `mlx-community/LocateAnything-3B-4bit` and downloads about 3 GB on first run. That model is an MLX quantization intended for Apple Silicon/macOS rather than a portable CUDA/GGUF format.
-
-## Native Qt Webcam Demo
+Launch the native webcam app:
 
 ```bash
 UV_CACHE_DIR=.uv-cache uv run python qt_realtime_locate.py
 ```
 
-The app opens camera index `0`, keeps the MLX 4-bit model loaded in a worker thread, shows a live preview, and runs recognition as fast as the model finishes each frame. The default settings use `hybrid` mode, 640x360 camera capture, inference width `256`, and max tokens `64`. Use:
+The first launch downloads `mlx-community/LocateAnything-3B-4bit` into `.hf-cache`; expect about 3 GB. After the model loads, click `Start camera`.
+
+Use another camera index if needed:
 
 ```bash
 UV_CACHE_DIR=.uv-cache uv run python qt_realtime_locate.py --camera 1
 ```
 
-if your webcam is not index `0`. macOS may ask for camera permission for the Python process the first time.
+macOS may ask for camera permission for the Python process the first time. The app keeps the MLX 4-bit model loaded in a worker thread, shows a live preview, and runs recognition as fast as the model finishes each frame. The default settings use `hybrid` mode, 640x360 camera capture, inference width `256`, and max tokens `64`.
 
 On a MacBook Air M3, the MLX 4-bit path runs semi-real-time for webcam demos with the default low-resolution inference settings. It is not a temporal video tracker; it processes the latest camera frame as an image and immediately schedules the next frame when inference finishes.
 
@@ -93,6 +56,47 @@ Task modes change how the textbox is turned into a model prompt:
 - `gui-point`: for screenshots or UI images; returns a point for a UI element, such as `the close icon`.
 
 For webcam scenes, start with `detect`, `point`, `ground-single`, or `ground-multi`. The `gui-*` modes are mainly for screen/UI images.
+
+## MLX CLI Smoke Test
+
+The same MLX 4-bit conversion can be tested from the command line:
+
+```bash
+UV_CACHE_DIR=.uv-cache uv run python run_locateanything_mlx.py --task point --query "the red square"
+```
+
+This uses `mlx-community/LocateAnything-3B-4bit`. That model is an MLX quantization intended for Apple Silicon/macOS rather than a portable CUDA/GGUF format.
+
+## PyTorch/MPS Fallback
+
+The original NVIDIA model can also be tested through PyTorch/MPS, but that path is slower and may fall back to CPU for unsupported operations. Download the original model first. This is about 8 GB and is resumable.
+
+```bash
+UV_CACHE_DIR=.uv-cache uv run python download_model.py
+```
+
+If that stalls, download only the two large weight shards:
+
+```bash
+UV_CACHE_DIR=.uv-cache uv run python download_weights.py
+```
+
+Then run the smoke test:
+
+```bash
+UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --task point --query "the red square" --max-new-tokens 32
+```
+
+Useful fallback options:
+
+```bash
+UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --image path/to/image.jpg --task detect --query "person, car"
+UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --image path/to/screen.png --task gui-point --query "the search button"
+UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --device cpu --dtype float32
+UV_CACHE_DIR=.uv-cache uv run python run_locateanything.py --generation-mode hybrid --max-new-tokens 2048
+```
+
+Start with `--generation-mode slow` for the original PyTorch/MPS path if you are debugging compatibility. It is slower, but avoids the fast parallel decoding path while proving the model runs.
 
 ## Notes
 
