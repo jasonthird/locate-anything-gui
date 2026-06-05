@@ -57,7 +57,7 @@ The MLX 4-bit conversion is much faster on Apple Silicon:
 UV_CACHE_DIR=.uv-cache uv run python run_locateanything_mlx.py --task point --query "the red square"
 ```
 
-This uses `mlx-community/LocateAnything-3B-4bit` and downloads about 3 GB on first run.
+This uses `mlx-community/LocateAnything-3B-4bit` and downloads about 3 GB on first run. That model is an MLX quantization intended for Apple Silicon/macOS rather than a portable CUDA/GGUF format.
 
 ## Native Qt Webcam Demo
 
@@ -72,6 +72,8 @@ UV_CACHE_DIR=.uv-cache uv run python qt_realtime_locate.py --camera 1
 ```
 
 if your webcam is not index `0`. macOS may ask for camera permission for the Python process the first time.
+
+On a MacBook Air M3, the MLX 4-bit path runs semi-real-time for webcam demos with the default low-resolution inference settings. It is not a temporal video tracker; it processes the latest camera frame as an image and immediately schedules the next frame when inference finishes.
 
 Controls:
 
